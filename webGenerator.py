@@ -6,8 +6,15 @@ Standards:     I. 5,6,9,1
 """
 # We need random to pick various elements/words, and tkinter for graphics
 import random
+from html.parser import HTMLParser
 import tkinter
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+
+class HTMLParse(HTMLParser):
+    count = 0
+    def handle_endtag(self, tag):
+        print("Tag Pairs so far: ", self.count)
+        self.count += 1
 
 # List of Valid HTML Tags
 openingTags = [
@@ -19,8 +26,9 @@ openingTags = [
     "<h6>",
     "<p>",
     "<marquee>",
-    "<ol><li>",
-    "<ul><li>",
+    "<li>",
+    "<ol>",
+    "<ul>",
     "<blockquote>",
     "<figcaption>",
     "<code>",
@@ -37,8 +45,9 @@ closingTags = [
     "</h6>",
     "</p>",
     "</marquee>",
-    "</li></ol>",
-    "</li></ul>",
+    "</li>",
+    "</ol>",
+    "</ul>",
     "</blockquote>",
     "</figcaption>",
     "</code>",
@@ -69,6 +78,10 @@ def generate():
     for i in range(0, numElements):
         htmlOutput += generateElement()
     htmlOutput+="</html>"
+    parser = HTMLParse()
+    parser.feed(htmlOutput)
+    print("There were", numElements, "pairs supposed to be linted.")
+    
     
 def save_file():
     file = open(asksaveasfilename(), "w")
